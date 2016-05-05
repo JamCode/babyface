@@ -19,7 +19,9 @@ var server = app.listen(appConfig.port, function(){
 //socket.io
 var io = require('socket.io')(server);
 io.on('connection', function(socket){
-    socket.emit('an event', { some: 'data' });
+    setInterval(function(){
+        socket.emit('time', { time: Date.now() });
+    }, 2000);
 });
 
 app.get('/', function(req, res) {
