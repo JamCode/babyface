@@ -22,7 +22,9 @@ io.on('connection', function(socket){
     socket.emit('an event', { some: 'data' });
 });
 
-
+app.get('/', function(req, res) {
+    res.send('hello world');
+});
 
 process.on('uncaughtException', function(err) {
     console.log(err.stack);
