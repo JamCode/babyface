@@ -16,6 +16,14 @@ var server = app.listen(appConfig.port, function(){
     console.log('app listening at %s:%s', host, port);
 });
 
+//socket.io
+var io = require('socket.io')(server);
+io.on('connection', function(socket){
+    socket.emit('an event', { some: 'data' });
+});
+
+
+
 process.on('uncaughtException', function(err) {
     console.log(err.stack);
     //处理全局异常
