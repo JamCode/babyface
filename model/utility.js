@@ -1,0 +1,51 @@
+
+var log = require('../utility/log.js');
+
+var mysqlpool = global.mysqlpool;
+var redisClient = global.redisClient;
+
+exports.redisHset = function(hash, key, value, callback){
+    redisClient.hget(hash, key, value, function(err, reply){
+        if(err){
+            log.error(err, log.getFileNameAndLineNum(__filename));
+            callback(err, null);
+        }else{
+            callback(null, reply);
+        }
+    });
+}
+
+exports.redisHget = function(hash, key, callback){
+    redisClient.hget(hash, key, function(err, reply){
+        if(err){
+            log.error(err, log.getFileNameAndLineNum(__filename));
+            callback(err, null);
+        }else{
+            callback(null, reply);
+        }
+    });
+}
+
+exports.executeSql = function(sql, para, callback) {
+	mysqlpool.getConnection(function(err, conn){
+		if (err) {
+			log.error(err, log.getFileNameAndLineNum(__filename));
+			if(callback && typeof callback === 'function'){
+				callback(err, null);
+			}
+		}else{
+			var query = conn.query(sql, para, function(err, result){
+				if (err) {
+					log.error(err+' sql:'+query.sql, log.getFileNameAndLineNum(__filename));
+					if(callback && typeof callback === 'function'){
+						callback(err, null);
+					}
+				} else{
+					if (callback && typeof callback === 'function') callback(null, result);
+				}
+				conn.release();
+			});
+			log.debug(query.sql, log.getFileNameAndLineNum(__filename));
+		}
+	});
+}
