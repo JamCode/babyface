@@ -1,134 +1,106 @@
-// 检测静态资源是否更新
-{
-    url: '/diff',
-    method: 'GET',
-    return:{
-        code: 0,
-        msg: 'OK',
-        data:{
-            [
-                {
-                    file_name:
-                    checksum:
-                    update_timestamp:
-                }
-            ]
-        }
-    }
-}
+// // 检测静态资源是否更新
+// {
+//     url: '/diff',
+//     method: 'GET',
+//     return:{
+//         code: 0,
+//         msg: 'OK',
+//         data:{
+//             [
+//                 {
+//                     file_name:
+//                     checksum:
+//                     update_timestamp:
+//                 }
+//             ]
+//         }
+//     }
+// }
+//
+// // 获取存量数据
+// {
+//     url: '/data',
+//     method: 'GET',
+//     parameter: 'code=101010&quote_srno=111111',
+//     return:{
+//         code:
+//         msg:
+//         data:[
+//             {
+//                 quote_srno:
+//                 code:
+//                 name:
+//                 price:
+//                 amount:
+//                 direct:
+//                 enty:
+//                 user:
+//                 timestamp:
+//             },
+//         ]
+//     }
+// }
+//
 
-// 获取存量数据
-{
-    url: '/data',
-    method: 'GET',
-    parameter: 'code=101010&quote_srno=111111',
-    return:{
-        code:
-        msg:
-        data:[
-            {
-                quote_srno:
-                code:
-                name:
-                price:
-                amount:
-                direct:
-                enty:
-                user:
-                timestamp:
-            },
-        ]
-    }
-}
-
-//新增
-{
-    url: '/data',
-    method: 'POST',
-    parameter: {
-        code:
-        name:
-        price:
-        amount:
-        direct:
-        enty:
-        user:
-    }
-    return:{
-        code:
-        msg:
-        data:{
-            quote_srno:
-            code:
-            name:
-            price:
-            amount:
-            direct:
-            enty:
-            user:
-            timestamp:
-        }
-    }
-}
-
-//修改
-{
-    url: '/data',
-    method: 'PUT',
-    parameter: {
-        quote_srno:
-        price:
-        amount:
-        enty:
-        user:
-    },
-    return:{
-        code:
-        msg:
-        data:{
-            quote_srno:
-            code:
-            name:
-            price:
-            amount:
-            direct:
-            enty:
-            user:
-            timestamp:
-        }
-    }
-}
-
-
-//删除
-{
-    url: '/data',
-    method: 'DELETE',
-    parameter: {
-        quote_srno:
-        enty:
-        user:
-    },
-    return:{
-        code:
-        msg:
-    }
-}
-
-// 根据提交的输入区域的字段值，计算计算区域的字段值
-{
-    url: 'caculate',
-    method: 'GET',
-    parameter: {
-        netPrice:
-        yield:
-    },
-    return:{
-        code:
-        msg:
-        data:{
-            dirtyPrice:
-            faceTotal:
-        }
-    }
-}
+//
+// //修改
+// {
+//     url: '/data',
+//     method: 'PUT',
+//     parameter: {
+//         quote_srno:
+//         price:
+//         amount:
+//         enty:
+//         user:
+//     },
+//     return:{
+//         code:
+//         msg:
+//         data:{
+//             quote_srno:
+//             code:
+//             name:
+//             price:
+//             amount:
+//             direct:
+//             enty:
+//             user:
+//             timestamp:
+//         }
+//     }
+// }
+//
+//
+// //删除
+// {
+//     url: '/data',
+//     method: 'DELETE',
+//     parameter: {
+//         quote_srno:
+//         enty:
+//         user:
+//     },
+//     return:{
+//         code:
+//         msg:
+//     }
+// }
+//
+// // 根据提交的输入区域的字段值，计算计算区域的字段值
+// {
+//     url: 'caculate',
+//     method: 'GET',
+//     parameter: {
+//         netPrice:
+//         yield:
+//     },
+//     return:{
+//         code:
+//         msg:
+//         data:{
+//             dirtyPrice:
+//             faceTotal:
+//         }
+//     }
+// }

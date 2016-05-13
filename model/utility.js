@@ -6,7 +6,7 @@ var mysqlpool = connection.getMysqlPool();
 var redisClient = connection.getRedisClient();
 
 exports.redisHset = function(hash, key, value, callback){
-    redisClient.hget(hash, key, value, function(err, reply){
+    redisClient.hset(hash, key, JSON.stringify(value), function(err, reply){
         if(err){
             log.error(err, log.getFileNameAndLineNum(__filename));
             callback(err, null);
@@ -22,7 +22,7 @@ exports.redisHget = function(hash, key, callback){
             log.error(err, log.getFileNameAndLineNum(__filename));
             callback(err, null);
         }else{
-            callback(null, reply);
+            callback(null, JSON.parse(reply));
         }
     });
 }

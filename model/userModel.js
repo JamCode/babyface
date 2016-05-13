@@ -1,4 +1,3 @@
-var pool = global.mysqlpool;
 var conn = require('./utility');
 
 exports.getUserCount = function(callback){
