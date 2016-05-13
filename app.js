@@ -20,9 +20,6 @@ initSocketIO(server);
 //初始化路由模块
 initRouter(app);
 
-//初始化数据库连接
-initDBConnection();
-
 
 
 app.get('/', function(req, res) {
@@ -79,23 +76,4 @@ function initRouter(app){
     var userRouter = require('./router/userRouter.js'); //示例路由模块
     //加载路由模块
     app.use('/user', userRouter);
-}
-
-
-function initDBConnection(){
-
-    log.info('initDBConnection......');
-
-
-    var dbConnection = require('./model/connection.js');//数据连接
-
-    //连接mysql数据库
-    global.mysqlpool = dbConnection.createMysqlConnectionPool();
-
-    //连接redis缓存
-    global.redisClient = dbConnection.connectRedis();
-
-
-
-
 }

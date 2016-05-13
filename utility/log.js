@@ -115,3 +115,8 @@ exports.warn = function(info, fileNameLineNum, logger) {
         logger.warn(fileNameLineNum + ' ' + info);
     }
 };
+
+//req对象详细信息
+exports.reqStr = function(req){
+    return 'path:'+req.originalUrl+' params:'+JSON.stringify(req.params)+' body:'+JSON.stringify(req.body);
+}

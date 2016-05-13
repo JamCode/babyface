@@ -1,8 +1,9 @@
 
 var log = require('../utility/log.js');
+var connection = require('./connection.js');
 
-var mysqlpool = global.mysqlpool;
-var redisClient = global.redisClient;
+var mysqlpool = connection.getMysqlPool();
+var redisClient = connection.getRedisClient();
 
 exports.redisHset = function(hash, key, value, callback){
     redisClient.hget(hash, key, value, function(err, reply){

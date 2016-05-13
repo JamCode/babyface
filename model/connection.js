@@ -2,18 +2,20 @@ var config = require('../config/appConfig.js');
 var mysql = require('mysql');
 var redis = require("redis");
 var redisClient = null;
-var pool = null;
+var mysqlPool = null;
 var log = require('../utility/log.js');
 
 
-exports.connectRedis = function(){
+function connectRedis(){
+
+    log.info('create redis client');
 
     if (config.redisConnection === undefined) {
         log.info('redisConnection is undefined', log.getFileNameAndLineNum(__filename));
         return null;
     }
 
-    redisClient = redis.createClient({auth_pass:config.redisConnection.auth_pass});
+    var redisClient = redis.createClient({auth_pass:config.redisConnection.auth_pass});
 
     redisClient.on("error", function (err) {
         log.error(err, log.getFileNameAndLineNum(__filename));
@@ -22,14 +24,16 @@ exports.connectRedis = function(){
     return redisClient;
 }
 
-exports.createMysqlConnectionPool = function(){
+function createMysqlConnectionPool(){
+
+    log.info('create mysql connection pool');
 
     if(config.mysqlConnection === undefined){
         log.info('mysqlConnection is undefined', log.getFileNameAndLineNum(__filename));
         return null;
     }
 
-    pool = mysql.createPool({
+    var mysqlPool = mysql.createPool({
     	host: config.mysqlConnection.host,
     	user: config.mysqlConnection.user,
       	password: config.mysqlConnection.password,
@@ -38,13 +42,27 @@ exports.createMysqlConnectionPool = function(){
     	acquireTimeout: 80000
     });
 
-    pool.getConnection(function(err, connection){
+    mysqlPool.getConnection(function(err, connection){
         if(err){
             log.error(err, log.getFileNameAndLineNum(__filename));
-            return null;
         }else{
             connection.release();
-            return pool;
         }
     });
+
+    return mysqlPool;
+}
+
+exports.getRedisClient = function(){
+    if (redisClient === null) {
+        redisClient = connectRedis();
+    }
+    return redisClient;
+}
+
+exports.getMysqlPool = function(){
+    if (mysqlPool === null) {
+        mysqlPool = createMysqlConnectionPool();
+    }
+    return mysqlPool;
 }
