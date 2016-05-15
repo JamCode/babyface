@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/JamCode/babyface#readme",
   "dependencies": {
+    "async": "^2.0.0-rc.4",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "log4js": "^0.6.36",
+    "md5": "^2.1.0",
     "mysql": "^2.10.2",
     "socket.io": "^1.4.6"
   }

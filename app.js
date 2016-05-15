@@ -1,12 +1,10 @@
 
 var appConfig = require('./config/appConfig.js');
-
 var log = require('./utility/log.js');
 var logger = log.createLog(appConfig.logConfig.logFileName);
 log.setLevel(logger, appConfig.logConfig.level);//设置打印级别
 log.setDefaultLogger(logger);
-
-
+var path = require('path');
 var express = require('express');
 var app = express();
 
@@ -19,6 +17,11 @@ initSocketIO(server);
 
 //初始化路由模块
 initRouter(app);
+
+
+//静态文件路径
+initStaticFile(app);
+
 
 
 
@@ -74,6 +77,26 @@ function initRouter(app){
     log.info('initRouter......');
 
     var userRouter = require('./router/userRouter.js'); //示例路由模块
+    var quoteRouter = require('./router/quoteRouter.js');
+    var comRouter = require('./router/comRouter.js');
+
     //加载路由模块
     app.use('/user', userRouter);
+    app.use('/', quoteRouter);
+    app.use('/', comRouter);
+}
+
+
+function initStaticFile(app){
+    global.staticPath = [];
+    global.staticPath.push(path.join(__dirname, 'static/css'));
+    global.staticPath.push(path.join(__dirname, 'static/js'));
+    global.staticPath.push(path.join(__dirname, 'static/image'));
+    global.staticPath.push(path.join(__dirname, 'static/html'));
+    global.staticPath.push(path.join(__dirname, 'static/fonts'));
+
+
+    global.staticPath.forEach(function(path){
+        app.use(express.static(path));
+    })
 }

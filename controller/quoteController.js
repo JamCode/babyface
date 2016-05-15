@@ -3,22 +3,46 @@ var log = require('../utility/log.js');
 
 var quoteController = {};
 
-
+function quotePackage(err, data, res){
+    var returnData = {};
+    if (err) {
+        log.error(err, log.getFileNameAndLineNum(__filename));
+        returnData.code = -1;
+        returnData.msg = err;
+    }else{
+        var quotes = [];
+        if (data!==null) {
+            if (data instanceof Array) {
+                quotes = data;
+            }else{
+                quotes.push(data);
+            }
+        }
+        returnData.code = 0;
+        returnData.data = quotes;
+    }
+    res.send(returnData);
+}
 
 quoteController.getQuote = function(req, res){
     //获取存量报价
-    quoteModel.getQuote(req.params, function(err, data){
-        var returnData = {};
-        if (err) {
-            log.error(err, log.getFileNameAndLineNum(__filename));
-            returnData.code = -1;
-            returnData.msg = err;
-        }else{
-            returnData.code = 0;
-            returnData.data = data;
-        }
-        res.send(returnData);
-    });
+    if (req.params.quote_srno !== undefined) {
+        quoteModel.getQuoteByQuoteSrno(req.params.quote_srno, function(err, data){
+            quotePackage(err, data, res);
+        });
+
+    }else if (req.params.code !== undefined) {
+        //获取相同债券号的报价
+        quoteModel.getQuoteByCode(req.params.code, function(err, data){
+            quotePackage(err, data, res);
+        });
+
+    }else{
+        //获取所有报价
+        quoteModel.getQuote(function(err, data){
+            quotePackage(err, data, res);
+        });
+    }
 }
 
 

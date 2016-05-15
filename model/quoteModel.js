@@ -69,8 +69,20 @@ exports.newQuote = function(quotebody, callback){
 // }
 exports.modifyQuote = function(quotebody ,callback){
     conn.redisHget(quoteHash, quotebody.quote_srno, function(err, reply){
+        var returnData = {};
         if (err) {
-
+            callback(err, reply);
+        }else{
+            if(reply === null){
+                //没有对应报价
+                log.info(quotebody.quote_srno+' is not exist');
+                callback('no quote', reply);
+            }else{
+                reply.price = quotebody.price;
+                reply.amount = quotebody.amount;
+                reply.timestamp = Date.now();
+                conn.redisHset(quoteHash, quotebody.quote_srno, reply, callback);
+            }
         }
     });
 }
@@ -89,8 +101,9 @@ exports.modifyQuote = function(quotebody ,callback){
 //         msg:
 //     }
 // }
-exports.delQuote = function(quotebody, callback){
 
+exports.delQuote = function(quotebody, callback){
+    conn.redisHdel(quoteHash, quotebody.quote_srno, callback);
 }
 
 
@@ -117,6 +130,46 @@ exports.delQuote = function(quotebody, callback){
 //         ]
 //     }
 // }
-exports.getQuote = function(quoteParams, callback){
+function packageQuote(err, reply, callback){
+    if (err) {
+        callback(err, null);
+    }else{
+        var quotes = [];
+        if (reply!==null) {
+            if (reply instanceof Array) {
+                quotes = reply;
+            }else{
+                quotes.push(reply);
+            }
+        }
+        callback(null, quotes);
+    }
+}
 
+exports.getQuote = function(callback){
+    conn.redisHvals(quoteHash, callback);
+}
+
+exports.getQuoteByCode = function(code, callback){
+    conn.redisHvals(quoteHash, function(err, reply){
+        if (err) {
+            callback(err, null);
+        }else{
+            var quotes = [];
+            if (reply!==null) {
+                reply.forEach(function(e){
+                    if (e.code === code) {
+                        quotes.push(e);
+                    }
+                });
+                callback(null, quotes);
+            }else{
+                callback(null, []);
+            }
+        }
+    });
+}
+
+exports.getQuoteByQuoteSrno = function(quote_srno, callback){
+    conn.redisHget(quoteHash, quote_srno, callback);
 }

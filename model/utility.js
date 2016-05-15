@@ -5,6 +5,15 @@ var connection = require('./connection.js');
 var mysqlpool = connection.getMysqlPool();
 var redisClient = connection.getRedisClient();
 
+
+exports.redisHvals = function(hash, callback){
+    redisClient.hvals(hash, callback);
+}
+
+exports.redisHdel = function(hash, key, callback){
+    redisClient.hdel(hash, key, callback);
+}
+
 exports.redisHset = function(hash, key, value, callback){
     redisClient.hset(hash, key, JSON.stringify(value), function(err, reply){
         if(err){
