@@ -18,3 +18,8 @@ exports.logConfig = {
     logFileName: path.join(process.env.HOME, 'logs/babyface_'),
     level: 'DEBUG'
 };
+
+exports.unitTestConfig = {
+    hostname: '127.0.0.1',
+    port: 3001
+}

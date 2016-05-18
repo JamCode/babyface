@@ -35,7 +35,13 @@ var quoteHash = 'quoteHash';
 exports.newQuote = function(quotebody, callback){
     quotebody.quote_srno = md5(quotebody.enty+quotebody.user+quotebody.code+Date.now()+Math.random());
     quotebody.timestamp = Date.now();
-    conn.redisHset(quoteHash, quotebody.quote_srno, quotebody, callback);
+    conn.redisHset(quoteHash, quotebody.quote_srno, quotebody, function(err, reply){
+        if (err) {
+            callback(err, null);
+        }else{
+            callback(null, quotebody);
+        }
+    });
 }
 
 

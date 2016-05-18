@@ -26,14 +26,16 @@ function quotePackage(err, data, res){
 
 quoteController.getQuote = function(req, res){
     //获取存量报价
-    if (req.params.quote_srno !== undefined) {
-        quoteModel.getQuoteByQuoteSrno(req.params.quote_srno, function(err, data){
+    if (req.query.quote_srno !== undefined) {
+        console.log('getQuoteByQuoteSrno:'+req.query.quote_srno);
+        quoteModel.getQuoteByQuoteSrno(req.query.quote_srno, function(err, data){
             quotePackage(err, data, res);
         });
 
-    }else if (req.params.code !== undefined) {
+    }else if (req.query.code !== undefined) {
         //获取相同债券号的报价
-        quoteModel.getQuoteByCode(req.params.code, function(err, data){
+        console.log('getQuoteByCode:'+req.query.code);
+        quoteModel.getQuoteByCode(req.query.code, function(err, data){
             quotePackage(err, data, res);
         });
 
@@ -68,7 +70,7 @@ quoteController.postQuote = function(req, res){
 
 quoteController.putQuote = function(req, res){
     //修改报价
-    quoteModel.modifyQuote(req.body, function(err, data){
+    quoteModel.modifyQuote(req.query, function(err, data){
         var returnData = {};
         if(err){
             log.error(err, log.getFileNameAndLineNum(__filename));
@@ -85,7 +87,7 @@ quoteController.putQuote = function(req, res){
 
 quoteController.delQuote = function(req, res){
     //删除报价
-    quoteModel.delQuote(req.body, function(err, data){
+    quoteModel.delQuote(req.query, function(err, data){
         var returnData = {};
         if(err){
             log.error(err, log.getFileNameAndLineNum(__filename));

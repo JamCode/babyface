@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var md5 = require('MD5');
 var fs = require('fs');
-var path = require('path');
+var pathModule = require('path');
 var log = require('../utility/log.js');
 var async = require('async');
 var util = require('util');
@@ -33,14 +33,22 @@ function getAllFilePath(staticPathArray, endCallback){
     async.eachSeries(staticPathArray, function(path, callback){
         fs.readdir(path, function(err, files){
             if (err) {
+                log.error(err, log.getFileNameAndLineNum(__filename));
                 callback(err, null);
             }else{
-                filePaths = filePaths.concat(files);
+
+                var fullFiles = [];
+                files.forEach(function(e){
+                    fullFiles.push(pathModule.join(path, e));
+                });
+
+                filePaths = filePaths.concat(fullFiles);
                 callback(null);
             }
         });
     }, function(err){
         if (err) {
+            log.error(err, log.getFileNameAndLineNum(__filename));
             endCallback(err, null);
         }else{
             endCallback(null, filePaths);
@@ -53,32 +61,37 @@ function checkSingleFile(filePath, endCallback){
         function(callback){
             fs.readFile(filePath, function(err, data){
                 if(err){
+                    log.error(err, log.getFileNameAndLineNum(__filename));
                     callback(err, null);
                 }else{
                     var result = {
                         file_name:filePath,
                         checksum:md5(data)
                     }
+                    console.log(result);
                     callback(null, result);
                 }
             });
-
         },
         function(callback){
             fs.stat(filePath, function(err, stats){
                 if (err) {
+                    log.error(err, log.getFileNameAndLineNum(__filename));
                     callback(err, null);
                 }else{
                     var result = {
                         update_time:util.inspect(stats).mtime
                     }
+                    callback(null, result);
                 }
             });
         }
     ], function(err, results){
         if (err) {
+            log.error(err, log.getFileNameAndLineNum(__filename));
             endCallback(err, null);
         }else{
+            console.log('checkSingleFile finish');
             var ele = {
                 file_name:results[0].file_name,
                 checksum:results[0].checksum,
@@ -100,15 +113,18 @@ router.route('/diff')
     var returnData = {};
     getAllFilePath(global.staticPath, function(err, filesPath){
         if (err) {
+            log.error(err, log.getFileNameAndLineNum(__filename));
             returnData.code = -1
             returnData.msg = err;
             res.send(returnData);
             return;
         }else{
             //diff all
+            console.log(filesPath);
             async.eachSeries(filesPath, function(filePath, callback){
                 checkSingleFile(filePath, function(err, ele){
                     if (err) {
+                        log.error(err, log.getFileNameAndLineNum(__filename));
                         callback(err, null);
                     }else{
                         checksumArray.push(ele);
@@ -117,6 +133,7 @@ router.route('/diff')
                 });
             }, function(err, data){
                 if (err) {
+                    log.error(err, log.getFileNameAndLineNum(__filename));
                     returnData.code = -1
                     returnData.msg = err;
                     res.send(returnData);

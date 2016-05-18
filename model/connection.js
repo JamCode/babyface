@@ -44,7 +44,7 @@ function createMysqlConnectionPool(){
 
     mysqlPool.getConnection(function(err, connection){
         if(err){
-            log.error(err, log.getFileNameAndLineNum(__filename));
+            log.error('mysql connection err '+err, log.getFileNameAndLineNum(__filename));
         }else{
             connection.release();
         }
