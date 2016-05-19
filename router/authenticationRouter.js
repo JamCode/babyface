@@ -21,7 +21,7 @@ router.post('/login', function(req, res){
             returnData.msg = err;
             res.send(returnData);
         }else{
-            if (reply === req.body.password) {
+            if (reply.password === req.body.password) {
                 //密码验证成功
                 var payload = {
                     user:req.body.user
@@ -33,7 +33,7 @@ router.post('/login', function(req, res){
                     token: token
                 };
                 res.send(returnData);
-                conn.redisHset(appConfig.redisHashTable.userTokenHash, req.body.user, token, function(err, reply){
+                conn.redisHset(appConfig.redisHashTable.userTokenHash, req.body.user, {token:token}, function(err, reply){
                     if (err) {
                         log.error(err, log.getFileNameAndLineNum(__filename));
                     }
@@ -53,6 +53,15 @@ router.post('/login', function(req, res){
 //注销
 router.post('/logout', function(req, res){
     var returnData = {};
+    if (req.body.token === null || req.body.token === undefined) {
+        returnData.code = constant.returnCode.ERROR;
+        returnData.msg = err;
+        res.send(returnData);
+        return;
+    }
+
+    
+
     var payload = jwt.decode(req.body.token, secret);
     conn.redisHdel(appConfig.redisHashTable.userTokenHash, payload.user, function(err, reply){
         if (err) {

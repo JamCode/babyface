@@ -85,10 +85,10 @@ function initRouter(app){
     var authe = require('./router/authenticationRouter.js');
 
     //加载路由模块
+    app.use('/', authe);
     app.use('/user', userRouter);
     app.use('/', quoteRouter);
     app.use('/', comRouter);
-    app.use('/', authe);
 }
 
 

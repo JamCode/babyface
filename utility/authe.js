@@ -5,13 +5,20 @@ var appConfig = require('../config/appConfig.js');
 var constant = require('./constant.js');
 
 exports.autheToken = function(token, callback){
+    console.log(token);
+    if (token === undefined||token === null) {
+        callback(null, constant.returnCode.TOKEN_INVALID);
+        return;
+    }
+
     var payload = jwt.decode(token, 'babyface');
-    conn.redisHget(appConfig.redisHashTable.userAccountHash, payload.user, function(err, reply){
+    conn.redisHget(appConfig.redisHashTable.userTokenHash, payload.user, function(err, reply){
         if (err) {
             log.error(err, log.getFileNameAndLineNum(__filename));
             callback(err, null);
         }else{
-            if (token === reply) {
+            console.log(reply);
+            if (token === reply.token) {
                 callback(null, constant.returnCode.TOKEN_VALID);
             }else{
                 //token失效

@@ -3,8 +3,10 @@ var router = express.Router();
 var quoteController = require('../controller/quoteController.js');
 var authe = require('../utility/authe.js');
 var constant = require('../utility/constant.js');
+var log = require('../utility/log.js');
 
-router.use(function validateToken(req, res, next){
+
+function autheToken(req, res, next){
     authe.autheToken(req.headers.token, function(err, code){
         if (err) {
             log.error(err, log.getFileNameAndLineNum(__filename));
@@ -14,22 +16,28 @@ router.use(function validateToken(req, res, next){
             });
         }else{
             if (code === constant.returnCode.TOKEN_INVALID) {
+                log.debug('token invalid');
                 res.status(401).json({
                     code: constant.returnCode.TOKEN_INVALID,
                     msg: 'token invalid'
                 });
             }
             if (code === constant.returnCode.TOKEN_VALID) {
-                log.info('token valid');
+                log.debug('token valid');
                 next();
             }
         }
     });
-});
+}
 
 
 router.route('/quote')
-.get(function(req, res){
+.all(function(req, res, next){
+    //token 验证
+    autheToken(req, res, next);
+
+}).
+get(function(req, res){
     //获取存量报价
     quoteController.getQuote(req, res);
 

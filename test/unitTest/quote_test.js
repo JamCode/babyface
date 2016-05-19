@@ -6,7 +6,7 @@ var async = require('async');
 function getQuoteBySrno(quote){
     it('get quote by srno', function(done){
         console.log('getQuoteBySrno:'+quote.quote_srno);
-        runner.runTest('GET', {quote_srno:quote.quote_srno}, '/quote', function(statusCode, body){
+        runner.runTest('GET', {quote_srno:quote.quote_srno, token:quote.token}, '/quote', function(statusCode, body){
             statusCode.should.be.equal(200);
             body.code.should.be.equal(constant.returnCode.SUCCESS);
 
@@ -35,6 +35,8 @@ function createQuote(quote){
 
 function modifyQuote(quote){
     it('modify quote', function(done){
+        quote.price = 102;
+        quote.amount = 2000;
         runner.runTest('PUT', quote, '/quote', function(statusCode, body){
             statusCode.should.be.equal(200);
             body.code.should.be.equal(constant.returnCode.SUCCESS);
@@ -59,8 +61,35 @@ function deleteQuote(quote){
 }
 
 
+function login(user){
+    it('login', function(done){
+        runner.runTest('POST', {user:'wanghan', password:'wanghan'}, '/login', function(statusCode, body){
+            statusCode.should.be.equal(200);
+            body.code.should.be.equal(constant.returnCode.LOGIN_SUCCESS);
+            //检查内部变量
+            //console.log(body.data.token);
+            user.token = body.data.token;
+            //console.log(user.token);
+            done();
+        });
+    });
+}
+
+function logout(user){
+    it('logout', function(done){
+        runner.runTest('POST', {token: user.token}, '/logout', function(statusCode, body){
+            statusCode.should.be.equal(200);
+            body.code.should.be.equal(constant.returnCode.SUCCESS);
+            //检查内部变量
+            done();
+        });
+    });
+}
+
+
 describe('test quote api base test', function(){
 
+    //登录
     var quote = {
         code: '100001',
         name: '现券100001',
@@ -71,19 +100,53 @@ describe('test quote api base test', function(){
         user: '400001'
     };
 
-    createQuote(quote);
-    quote.price = 102;
-    quote.amount = 2000;
+    var user = {};
 
+    before(function(done){
+        console.log('enter before');
+        runner.runTest('POST', {user:'wanghan', password:'wanghan'}, '/login', function(statusCode, body){
+            statusCode.should.be.equal(200);
+            body.code.should.be.equal(constant.returnCode.LOGIN_SUCCESS);
+            //检查内部变量
+            //console.log(body.data.token);
+            //console.log(user.token);
+            quote.token = body.data.token;
+            user.token = body.data.token;
+            console.log(quote.token);
+            console.log(user.token);
+            done();
+        });
+    });
+
+
+
+    it('create quote', function(done){
+        runner.runTest('POST', quote, '/quote', function(statusCode, body){
+            statusCode.should.be.equal(200);
+            body.code.should.be.equal(constant.returnCode.SUCCESS);
+
+            //检查内部变量
+            body.should.have.property('data');
+            quote.quote_srno = body.data.quote_srno;
+            done();
+        });
+    });
+
+
+
+    //
     modifyQuote(quote);
     getQuoteBySrno(quote);
     deleteQuote(quote);
+    logout(user);
 
 });
 
 
-
+//
 describe('parameter get quote test', function(){
+
+    //登录
 
     var quotes = [
         {
@@ -123,6 +186,24 @@ describe('parameter get quote test', function(){
             user: '400023'
         }
     ];
+    var user = {};
+
+    //登录
+    before(function(done){
+        console.log('enter before');
+        runner.runTest('POST', {user:'wanghan', password:'wanghan'}, '/login', function(statusCode, body){
+            statusCode.should.be.equal(200);
+            body.code.should.be.equal(constant.returnCode.LOGIN_SUCCESS);
+            //检查内部变量
+            //console.log(body.data.token);
+            //console.log(user.token);
+            quotes.forEach(function(e){
+                e.token = body.data.token;
+            });
+            user.token = body.data.token;
+            done();
+        });
+    });
 
 
     //添加所有报价
@@ -148,7 +229,7 @@ describe('parameter get quote test', function(){
     //获取所有报价
     it('get all quote', function(done){
 
-        runner.runTest('GET', {}, '/quote', function(statusCode, body){
+        runner.runTest('GET', user, '/quote', function(statusCode, body){
             statusCode.should.be.equal(200);
             body.code.should.be.equal(constant.returnCode.SUCCESS);
 
@@ -164,7 +245,7 @@ describe('parameter get quote test', function(){
     //按照quote_srno获取报价
     it('get quote by quote_srno', function(done){
 
-        runner.runTest('GET', {quote_srno: quotes[0].quote_srno}, '/quote', function(statusCode, body){
+        runner.runTest('GET', {quote_srno: quotes[0].quote_srno, token:user.token}, '/quote', function(statusCode, body){
             statusCode.should.be.equal(200);
             body.code.should.be.equal(constant.returnCode.SUCCESS);
 
@@ -182,7 +263,7 @@ describe('parameter get quote test', function(){
     //按照债券code获取报价
     it('get quote by code', function(done){
 
-        runner.runTest('GET', {code: '100001'}, '/quote', function(statusCode, body){
+        runner.runTest('GET', {code: '100001', token:user.token}, '/quote', function(statusCode, body){
             statusCode.should.be.equal(200);
             body.code.should.be.equal(constant.returnCode.SUCCESS);
             //检查内部变量
@@ -212,4 +293,8 @@ describe('parameter get quote test', function(){
             done();
         });
     });
+
+
+    //登出
+    logout(user);
 });

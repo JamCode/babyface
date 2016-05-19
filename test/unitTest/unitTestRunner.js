@@ -43,6 +43,9 @@ exports.runTest = function(method, jsonObject, childpath, callback){
             callback('timeout', 'timeout');
         });
 
+        if (jsonObject.token!== undefined) {
+            req.setHeader('token', jsonObject.token);
+        }
         req.write(JSON.stringify(jsonObject));
         req.end();
     }
@@ -81,6 +84,10 @@ exports.runTest = function(method, jsonObject, childpath, callback){
         req.setTimeout(10000, function(){
             callback('timeout', 'timeout');
         });
+
+        if (jsonObject.token!== undefined) {
+            req.setHeader('token', jsonObject.token);
+        }
 
         req.end();
     }
