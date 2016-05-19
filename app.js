@@ -8,6 +8,9 @@ var path = require('path');
 var express = require('express');
 var app = express();
 
+// HS256 secrets are typically 128-bit random strings, for example hex-encoded:
+// var secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex)
+
 
 //初始化http服务
 var server = InitHTTPServer(app);
@@ -79,11 +82,13 @@ function initRouter(app){
     var userRouter = require('./router/userRouter.js'); //示例路由模块
     var quoteRouter = require('./router/quoteRouter.js');
     var comRouter = require('./router/comRouter.js');
+    var authe = require('./router/authenticationRouter.js');
 
     //加载路由模块
     app.use('/user', userRouter);
     app.use('/', quoteRouter);
     app.use('/', comRouter);
+    app.use('/', authe);
 }
 
 

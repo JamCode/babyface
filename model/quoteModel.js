@@ -1,7 +1,8 @@
 var conn = require('./utility');
 var md5 = require('MD5');
 var log = require('../utility/log.js');
-var quoteHash = 'quoteHash';
+var appConfig = require('../config/appConfig.js');
+var quoteHash = appConfig.redisHashTable.quoteHash;
 
 // //新增
 // {
