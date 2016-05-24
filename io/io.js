@@ -45,6 +45,7 @@ exports.connectionEntry = function(socket){
 
 function ioHandle(socket){
     socket.on('data', function(data){
+        console.log('data event');
         socket.emit('data', data);
     });
 }
