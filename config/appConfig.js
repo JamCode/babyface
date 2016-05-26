@@ -15,6 +15,12 @@ exports.redisConnection = {
 };
 
 
+//mongodb连接配置
+exports.mongodbConnection = {
+    database: process.env.mongoDatabase
+};
+
+
 //redis中hash表配置
 exports.redisHashTable = {
     userAccountHash: 'userAccountHash',
