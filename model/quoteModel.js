@@ -1,5 +1,5 @@
 var conn = require('./utility');
-var md5 = require('MD5');
+var md5 = require('md5');
 var log = require('../utility/log.js');
 var appConfig = require('../config/appConfig.js');
 var quoteHash = appConfig.redisHashTable.quoteHash;
