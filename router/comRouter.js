@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var md5 = require('MD5');
+var md5 = require('md5');
 var fs = require('fs');
 var pathModule = require('path');
 var log = require('../utility/log.js');
