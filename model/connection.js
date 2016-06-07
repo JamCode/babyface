@@ -3,6 +3,9 @@ var mysql = require('mysql');
 var redis = require("redis");
 var redisClient = null;
 var mysqlPool = null;
+var mongoClient = require('mongodb').MongoClient;
+
+
 var log = require('../utility/log.js');
 
 
