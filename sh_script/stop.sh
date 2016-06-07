@@ -1,1 +1,1 @@
-pm2 stop ../app.js
+pm2 stop ./app.js
