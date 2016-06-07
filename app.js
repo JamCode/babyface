@@ -100,7 +100,7 @@ function initStaticFile(app){
     global.staticPath.push(path.join(__dirname, 'static/html'));
     global.staticPath.push(path.join(__dirname, 'static/fonts'));
 
-
+    console.log('initStaticFile');
     global.staticPath.forEach(function(path){
         app.use(express.static(path));
     })
