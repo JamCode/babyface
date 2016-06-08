@@ -9,9 +9,7 @@ exports.port = 3001;
 //     // database: process.env.database,
 //     // port: process.env.dbport
 // };
-            ssss
-            var
-            ssss
+
 exports.redisConnection = {
     auth_pass: process.env.redis_auth_pass
 };
