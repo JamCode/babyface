@@ -11,7 +11,7 @@ exports.port = 3001;
 // };
             ssss
             var
-            
+            ssss
 exports.redisConnection = {
     auth_pass: process.env.redis_auth_pass
 };
